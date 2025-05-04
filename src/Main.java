@@ -1,5 +1,4 @@
 import services.*;
-import models.Customer;
 
 import java.sql.Date;
 import java.util.Scanner;
