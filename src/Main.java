@@ -79,7 +79,8 @@ public class Main {
             System.out.println("10. Изтрий резервация");
             System.out.println("11. Моите резервации");
             System.out.println("12. Провери статус на резервация по код");
-            System.out.println("13. Изход");
+            System.out.println("13. Промяна на лични данни (имейл и парола)");
+            System.out.println("14. Изход");
 
             System.out.print("👉 Избор: ");
             int choice = scanner.nextInt();
@@ -133,6 +134,13 @@ public class Main {
                     BookingService.checkBookingStatusByCode(bookingCode);
                     break;
                 case 13:
+                    System.out.print("👉 Въведи нов имейл: ");
+                    String newEmail = scanner.nextLine();
+                    System.out.print("👉 Въведи нова парола: ");
+                    String newPassword = scanner.nextLine();
+                    CustomerService.updateCustomerInfo(customerId, newEmail, newPassword);
+                    break;
+                case 14:
                     System.out.println("🔚 Излизане от потребителското меню.");
                     isRunning = false;
                     break;

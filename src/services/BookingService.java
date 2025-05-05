@@ -79,23 +79,38 @@ public class BookingService {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
-            while (rs.next()) {
-                System.out.println("Код: " + rs.getString("Code") + " | Полет: " + rs.getString("flight_number") + " | Статус: Непотвърдена");
+            if (!rs.isBeforeFirst()) {
+                System.out.println("✅ Няма непотвърдени резервации. Всички резервации са потвърдени.");
+                return;
             }
 
-            System.out.print("Въведи код на резервация за потвърждение: ");
-            String code = scanner.nextLine();
+            while (rs.next()) {
+                String code = rs.getString("Code");
+                String flight = rs.getString("flight_number");
+                Date date = rs.getDate("flight_date");
+                Double price = rs.getDouble("Price");
 
-            String update = "UPDATE bookings SET status = '1' WHERE Code = ?";
-            PreparedStatement up = conn.prepareStatement(update);
-            up.setString(1, code);
-            up.executeUpdate();
-            System.out.println("✅ Резервацията е потвърдена.");
+                System.out.printf("Резервация: %s | Полет: %s | Дата: %s | Цена: %.2f лв.%n",
+                        code, flight, date.toString(), price);
+
+                System.out.print("✅ Потвърди тази резервация? (yes/no): ");
+                String confirm = scanner.nextLine();
+
+                if (confirm.equalsIgnoreCase("yes")) {
+                    String updateQuery = "UPDATE bookings SET status = '1' WHERE Code = ?";
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                        updateStmt.setString(1, code);
+                        updateStmt.executeUpdate();
+                        System.out.println("✅ Резервацията е потвърдена.");
+                    }
+                }
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     public static void viewAllBookings() {
         String query = "SELECT * FROM bookings";

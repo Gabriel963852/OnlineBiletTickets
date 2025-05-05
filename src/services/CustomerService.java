@@ -84,4 +84,24 @@ public class CustomerService {
         return -1;  // ако не намери
     }
 
+    public static void updateCustomerInfo(int customerId, String newEmail, String newPassword) {
+        String query = "UPDATE Customers SET email = ?, password = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, newEmail);
+            stmt.setString(2, newPassword);
+            stmt.setInt(3, customerId);
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("✅ Данните бяха успешно обновени.");
+            } else {
+                System.out.println("❌ Неуспешно обновяване. Провери данните.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
